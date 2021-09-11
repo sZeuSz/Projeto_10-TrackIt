@@ -1,92 +1,52 @@
 import Logo from "./logo.png"
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
-import { useState } from "react";
-
+import React, { useContext, useEffect, useState } from "react";
+import { postLogin } from "../../Service/trackit";
+import {Form, Input, Logotype, Button} from "../../GlobalStyle/GlobalStyle";
+import UserContext from "../../Contexts/UserContext";
+import Loader from "react-loader-spinner";
 export default function Login() {
 
     const history = useHistory();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [valid, setValid] = useState(null);
-            
-    history.push("/");
+    const {userInfo, setUserInfo} = useContext(UserContext);
+    const [loading, setLoading] = useState(false);
+    
+    function login (event) {
 
-    function register () {
+        event.preventDefault();
 
-        if(/^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/.test(email) && password.replaceAll(" ", "").length > 0){
-
-            history.push('/');
+        const body = {
+            email,
+            password
         }
-        else{
-            setValid(false);
-        }
-        
+
+        //const promise = postLogin();
+        setLoading(true);
+
+        postLogin(body).then((response) => {
+            console.log(response.data);
+            setUserInfo(response.data);
+            history.push("/hoje");
+        });
+        postLogin(body).catch((error) => {
+            alert("Email ou senha inválidos");
+            setLoading(false);
+        });
     }
+
     
     return (
-        <Form valid={valid}>
+        <Form onSubmit={login}>
             <Logotype src={Logo} alt="Logo" />
-            <Input type="text" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)}></Input>
-            <span>Insira um email válido</span>
-            <Input type="text" placeholder="senha" value={password} onChange={(e) => setPassword(e.target.value)}></Input>
-            <span>Insira uma senha válida</span>
-            <p>{email}</p>
-            <p>{password}</p>
-            <Button  onClick="">Entrar</Button>
+            <Input type="email" placeholder="email" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading}></Input>
+            <Input type="password" placeholder="senha" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading}></Input>
+            <Button type="submit"> {!loading ? "Entrar" : <Loader type="Oval" color="#FFFFFF" height={40} width={40} /> } </Button>
             <Link to="/registration">
                 Não tem uma conta? Cadastre-se!
             </Link>
         </Form >
     );
 }
-
-function validInfo(email, password){
-    
-    return /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/.test(email) && password.replaceAll(" ", "").length > 0;
-}
-
-export const Form = styled.form`
-    ${props => console.log(props.valid)}
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    a {
-        color: #52B6FF;
-        font-size: 13.98px;
-    }
-    span {
-        font-style: italic;
-        width: 303px;
-        color: red;
-        padding-left: 3px;
-
-        display: ${props => props.valid === null ? "none" : props.valid === true ? "none" : "block"}
-    }
-`;
-
-
-export const Logotype = styled.img`
-    width: 180px;
-    height: 178.38px;
-    margin-top: 68px;
-    margin-bottom: 32.62px;
-`;
-
-export const Input = styled.input`
-    width: 303px;
-    height: 45px;
-    margin-bottom: 6px;
-    padding-left: 11px;
-    border: 1px solid #D4D4D4;
-    border-radius: 5px;
-`;
-
-export const Button = styled.button`
-    width: 303px;
-    height: 45px;
-    margin-bottom: 25px;
-    background-color: #52B6FF;
-    font-size: 20.98px;
-    color: #FFFFFF;
-`;
