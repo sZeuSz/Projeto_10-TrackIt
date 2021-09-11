@@ -3,14 +3,28 @@ import styled from "styled-components";
 import Footer from "../Footer/Footer";
 import { CircularProgressbar, CircularProgressbarWithChildren } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-
+import { useEffect } from "react/cjs/react.development";
+import { getToday } from "../../Service/trackit";
+import { useContext } from "react";
+import UserContext from "../../Contexts/UserContext";
+import dayjs from "dayjs";
+import 'dayjs/locale/pt-br';
 export default function Today() {
-    const percentage = 25;
+
+    const {userInfo, setUserInfo} = useContext(UserContext);
+
+    useEffect(() => {
+
+        console.log(userInfo.token);
+        getToday(userInfo.token).then((response) => console.log(response));
+    }, [])
+    console.log(dayjs().locale('pt-br').format('dddd, DD/MM'));
+
     return (
         <>
             <TopBar />
             <SituationHabitsContent>
-                <Date>Segunda, 17/05</Date>
+                <Date>{dayjs().locale('pt-br').format('dddd, DD/MM')}</Date>
                 <Span>Nenhum hábito concluído ainda</Span>
                 <HabitSituation>
                     <HabitTitle>Ler 1 capítulo de livro</HabitTitle>
@@ -25,9 +39,6 @@ export default function Today() {
                     <Records>Sequência atual: 3 dias</Records>
                     <Records>Seu recorde: 5 dias</Records>
                 </HabitSituation>
-                <Example label="Default">
-      <CircularProgressbar value={percentage} text={`${percentage}%`} />
-    </Example>
             </SituationHabitsContent>
             <Footer />
 

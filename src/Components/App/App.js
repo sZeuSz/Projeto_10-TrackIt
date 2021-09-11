@@ -6,6 +6,7 @@ import GlobalStyle from "../../GlobalStyle/GlobalStyle";
 import Login from "../Login/Login";
 import Registration from "../Registration/Registration";
 import Today from "../Today/Today";
+import Habits from "../Habits/Habits";
 
 function App() {
 
@@ -25,7 +26,7 @@ function App() {
             {/* <NoHabits /> */}
           </Route>
           <Route path="/habits" exact>
-            {/* <Habits /> */}
+            <Habits />
           </Route>
           <Route path="/with-habits" exact>
             {/* <WithHabits /> */}

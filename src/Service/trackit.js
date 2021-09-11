@@ -29,8 +29,22 @@ function getHabits (token) {
     return promise;
 }
 
+
+function getToday (token) {
+    
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    }
+    const promise = axios.get(`${BASE_URL}/habits/today`, config);
+
+    return promise;
+}
+
 export {
     postRegister,
     postLogin,
     getHabits,
+    getToday,
 }

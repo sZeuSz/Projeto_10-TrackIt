@@ -1,13 +1,45 @@
 
 import styled from "styled-components";
-import { CircularProgressbar, CircularProgressbarWithChildren } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { useState } from "react/cjs/react.development";
+
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 export default function Footer() {
-    const percentage = 66;
+
+    const [percentage, setPercentage]= useState(40);
     return (
         <FooterComponent>
             <p>Hábitos</p>
-            <p>Histórico</p>
+            <CircularProgressbar
+                value={percentage}
+                text={`Hoje`}
+                styles={{
+                    root: {backgroundColor: '#52B6FF', borderRadius: `${50}%`, width: 100, height: 100, marginBottom: 45, strokeWidth: 8},
+                    path: {
+                    stroke: `#FFFFFF`,
+                    strokeLinecap: 'butt',
+                    strokeWidth: `${8}px`,
+                    transformOrigin: 'center center',
+                    backgroundColor: 'black',
+                    margin: 5,
+                    },
+                    trail: {
+                    stroke: '#52B6FF',
+                    strokeLinecap: 'butt',
+                    transform: 'rotate(0.25turn)',
+                    transformOrigin: 'center center',
+                    },
+                    text: {
+                    fill: '#FFFFFF',
+                    fontSize: '16px',
+                    },
+                    background: {
+                    fill: '#3e98c7',
+                    },
+                }}
+                />
+                <p>Histórico</p>
         </FooterComponent>
     );
 }
