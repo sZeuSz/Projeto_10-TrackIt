@@ -26,7 +26,6 @@ export default function HabitUser({habit, weekdays, setHabits, habits}) {
             },
             {
               label: "Não"
-              // onClick: () => alert("Click No")
             }
           ]
         });

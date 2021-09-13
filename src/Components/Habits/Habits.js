@@ -9,8 +9,10 @@ import { getHabits, postHabits } from "../../Service/trackit";
 import HabitUser from "./Habit";
 import Loader from "react-loader-spinner";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import { useHistory } from "react-router";
 export default function Habits() {
     
+    const history = useHistory();
     const weekdays = ['D','S', 'T', 'Q', 'Q', 'S', 'S'];
     const [days, setDays] = useState([]);
     const [habits, setHabits] = useState(null);
@@ -20,6 +22,9 @@ export default function Habits() {
     const [reset, setReset] = useState(false);
     const [loading, setLoading] = useState(false);
     
+    if(userInfo === ""){
+        history.push("/");
+    }
     useEffect(() => {
         getHabits(userInfo.token).then((response) => {
             setHabits(response.data)});

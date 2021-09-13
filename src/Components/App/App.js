@@ -7,7 +7,7 @@ import Login from "../Login/Login";
 import Registration from "../Registration/Registration";
 import Today from "../Today/Today";
 import Habits from "../Habits/Habits";
-
+import Historic from "../History/History";
 function App() {
 
   const [userInfo, setUserInfo] = useState("");
@@ -28,6 +28,9 @@ function App() {
           </Route>
           <Route path="/hoje">
             <Today />
+          </Route>
+          <Route path="/historico" exact>
+            <Historic />
           </Route>
         </Switch>
         <GlobalStyle />

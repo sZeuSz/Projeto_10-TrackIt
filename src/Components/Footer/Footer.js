@@ -44,7 +44,7 @@ export default function Footer() {
                     }}
                     />
             </div>
-            <p>Histórico</p>
+            <p onClick={() => history.push("/historico")}>Histórico</p>
         </FooterComponent>
     );
 }

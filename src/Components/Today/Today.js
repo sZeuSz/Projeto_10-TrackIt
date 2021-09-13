@@ -9,13 +9,19 @@ import UserContext from "../../Contexts/UserContext";
 import dayjs from "dayjs";
 import 'dayjs/locale/pt-br';
 import HabitSituation from "./HabitSituation";
+import { useHistory } from "react-router";
 
 export default function Today() {
 
+    const history = useHistory();
     const {userInfo} = useContext(UserContext);
     const {setPercentage} = useContext(UserContext);    
     const [data, setData] = useState([]);
 
+    if(userInfo === ""){
+
+        history.push("/");
+    }
     function renderToday() {
         getToday(userInfo.token).then((response) => {setData(response.data)}).catch(err => {
             alert("erro")
@@ -46,8 +52,9 @@ export default function Today() {
 
   const Container = styled.div`
   height: 100vh;
-  margin-top: 80px;
+  margin-top: 70px;
   padding: 0 18px 0 18px;
+  background-color: #E5E5E5;
 `;
 
 const Date = styled.h2`
