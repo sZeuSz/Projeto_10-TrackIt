@@ -1,4 +1,3 @@
-import react from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react/cjs/react.development";
 import { useHistory } from "react-router";
@@ -25,8 +24,14 @@ export default function Registration () {
             password
         }
         setLoading(true);
-        postRegister(body).then(() => history.push('/'));
-        postRegister(body).catch(() => alert("Insira os dados corretamente"));
+
+        postRegister(body).then(() => {
+            setLoading(false);
+            history.push('/');
+        }).catch(() => {
+            alert("Insira os dados corretamente");
+            setLoading(false);
+        });
     }
 
     return  (
@@ -37,9 +42,7 @@ export default function Registration () {
             <Input type="text" placeholder="nome" required value={name} onChange={e => setName(e.target.value)} disabled={loading}></Input>
             <Input type="url" placeholder="foto" required onChange={e => setUrlImage(e.target.value)} disabled={loading}></Input>
             <Button type="submit">{!loading ? "Cadastrar" : <Loader type="Oval" color="#FFFFFF" height={40} width={40} /> }</Button>
-            <Link to="/">
-                Já tem uma conta? Faça login!
-            </Link>
+            <h6 onClick={() => history.push("/")}>Já tem uma conta? Faça login!</h6>
         </Form >
     );
 }

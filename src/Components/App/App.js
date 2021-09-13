@@ -11,31 +11,23 @@ import Habits from "../Habits/Habits";
 function App() {
 
   const [userInfo, setUserInfo] = useState("");
+  const [percentage, setPercentage]= useState(0);
 
   return (
-    <UserContext.Provider value={{userInfo, setUserInfo}} >
+    <UserContext.Provider value={{userInfo, setUserInfo, percentage, setPercentage}} >
       <BrowserRouter>
         <Switch>
           <Route path="/" exact>
             <Login />
           </Route>
-          <Route path="/registration" exact>
+          <Route path="/cadastro" exact>
             <Registration />
           </Route>
-          <Route path="/nohabits" exact>
-            {/* <NoHabits /> */}
-          </Route>
-          <Route path="/habits" exact>
+          <Route path="/habitos" exact>
             <Habits />
-          </Route>
-          <Route path="/with-habits" exact>
-            {/* <WithHabits /> */}
           </Route>
           <Route path="/hoje">
             <Today />
-          </Route>
-          <Route path="/today2">
-            {/* <Today2 /> */}
           </Route>
         </Switch>
         <GlobalStyle />

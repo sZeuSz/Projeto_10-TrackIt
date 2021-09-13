@@ -92,7 +92,7 @@ export const Form = styled.form`
     display: flex;
     flex-direction: column;
     align-items: center;
-    a {
+    h6 {
         color: #52B6FF;
         font-size: 13.98px;
     }

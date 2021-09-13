@@ -2,29 +2,26 @@ import styled from "styled-components";
 import { Input } from "../../GlobalStyle/GlobalStyle";
 import TopBar from "../TopBar/TopBar";
 import Footer from "../Footer/Footer";
-import svg from "./+.svg";
 import { useContext, useState } from "react";
 import UserContext from "../../Contexts/UserContext";
 import { useEffect } from "react/cjs/react.development";
 import { getHabits, postHabits } from "../../Service/trackit";
 import HabitUser from "./Habit";
-
-import { confirmAlert } from "react-confirm-alert";
+import Loader from "react-loader-spinner";
 import "react-confirm-alert/src/react-confirm-alert.css";
 export default function Habits() {
     
     const weekdays = ['D','S', 'T', 'Q', 'Q', 'S', 'S'];
     const [days, setDays] = useState([]);
     const [habits, setHabits] = useState(null);
-    const {userInfo, setUserInfo} = useContext(UserContext);
+    const {userInfo} = useContext(UserContext);
     const [plus, setPlus] = useState(false);
     const [habitName, setHabitName] = useState("");
     const [reset, setReset] = useState(false);
+    const [loading, setLoading] = useState(false);
     
     useEffect(() => {
-        console.log(userInfo);
         getHabits(userInfo.token).then((response) => {
-            console.log(response.data);
             setHabits(response.data)});
         getHabits(userInfo.token).catch((error) => alert("erro no servidor, sorry."));
     }, [])
@@ -32,37 +29,69 @@ export default function Habits() {
     if(habits === null) {
 
         return (
-            <h1>LOADING</h1>
+            ""
         )
     }
 
     function saveHabit () {
+
+        setLoading(true);
 
         const body = {
             name: habitName,
             days
         }
 
-        postHabits(userInfo.token, body).then((response) => {
-            console.log(response.data);
-            setHabits([...habits, response.data])
-            setPlus(!plus);
-        }).catch((error) => console.log(error));
+        postHabits(userInfo.token, body)
+        .then((response) => {
 
+            if(reset){
+                setReset(null);
+            }
+            else{
+                setReset(true);
+            }
+    
+            setTimeout(() => {
+                sreset()
+            }, 0);
+
+            setHabits([...habits, response.data])
+            setDays([]);
+            setHabitName("");
+            setPlus(!plus);
+            setLoading(false);
+        })
+        .catch((error) => {
+            if(habitName === ""){
+                alert('nome invalido');
+            }
+            if(days.length === 0){
+                alert('marque pelo menos 1 dia');
+            }
+
+            setLoading(false);
+
+        });
+
+    }
+
+    function sreset (){
+        setReset(null);
     }
     return (
         <>
             <TopBar />
-            <HabitsContent>
+            <HabitsContent plus={plus} days={habits}>
                 <h2>Meus hábitos</h2>
                 <AddHabitButton onClick={() => setPlus(!plus)}>+</AddHabitButton>
                 <AddHabitBox plus={plus}>
-                    <Input placeholder="nome do hábito" value={habitName} onChange={e => setHabitName(e.target.value)}></Input>
-                    <Weekdays>
-                        {weekdays.map((weekday, index) => <ListWeekDay key={index} days={days} weekday={weekday} id={index} setDays={setDays} />)}
-                    </Weekdays>
-                    <a href="#">Cancelar</a>
-                    <SaveButton onClick={saveHabit}>Salvar</SaveButton>
+                    <Input disabled={loading} placeholder="nome do hábito" value={habitName} onChange={e => setHabitName(e.target.value)}></Input>
+                    {!reset ? <Weekdays>
+                        {weekdays.map((weekday, index) => <ListWeekDay key={index} days={days} weekday={weekday} id={index} setDays={setDays} loading={loading} />)}
+                    </Weekdays> : ""}
+                    <h1 onClick={() => setPlus(!plus)}>Cancelar</h1>
+                    <SaveButton onClick={saveHabit}>{!loading ? "Salvar" :<Loader type="Oval" color="#FFFFFF" height={20} width={20} />}</SaveButton>
                 </AddHabitBox>
                 {habits.length === 0 ? 
                         <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p> :
@@ -78,7 +107,7 @@ export default function Habits() {
 };
 
 
-function ListWeekDay ({ days,weekday, id, setDays}) {
+function ListWeekDay ({days,weekday, id, setDays, loading}) {
 
     const [selected, setSelected] = useState(null);
 
@@ -93,13 +122,15 @@ function ListWeekDay ({ days,weekday, id, setDays}) {
             setDays([...days, id]);
         }
     }
-    return <Weekday selected={selected}  id={id} onClick={() => select(id, selected)}>{weekday}</Weekday>
+    return <Weekday disabled={loading} selected={selected}  id={id} onClick={() => select(id, selected)}>{weekday}</Weekday>
 }
 
 export const HabitsContent = styled.div`
     background-color: #E5E5E5;
-    padding: 98px 18px 110px 17px;
-    height: auto;
+    padding: 98px 18px 110px  17px;
+    margin:  0 0 110 0;
+    /* height: ${({plus}) => !plus ? `calc(100vh + 300px);` : `calc(100vh + 520px);`}; */
+    height: ${({days, plus}) => days.length >= 4 || plus ? "auto" : "100vh"};
     h2 {
         color: #126BA5;
         font-size: 22.98px;
@@ -135,7 +166,7 @@ export const AddHabitBox = styled.div`
     margin-bottom: 29px;
     position: relative;
     display: ${({plus}) => !plus ? "none" : "block"};
-    a {
+    h1 {
         font-size: 15.98px;
         color: #52B6FF;
         position: absolute;
@@ -153,8 +184,9 @@ export const Habit = styled.div`
     border-radius: 5px;
     padding: 13px 11px 0 17px;
     margin-bottom: 10px;
-    position: relative;
     word-break: break-all;
+    position: relative;
+    
     h3 {
         font-size: 19.98px;
         margin-bottom: 8px;

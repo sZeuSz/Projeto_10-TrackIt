@@ -66,6 +66,11 @@ function deleteHabit(token, id){
 
     return promise;
 }
+
+function releaseState(type, id, autorization){
+    const promise = axios.post(`${BASE_URL}/habits/${id}/${type}`,{}, autorization);
+    return promise;
+}
 export {
     postRegister,
     postLogin,
@@ -73,4 +78,5 @@ export {
     getHabits,
     getToday,
     deleteHabit,
+    releaseState,
 }

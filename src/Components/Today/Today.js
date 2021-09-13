@@ -1,64 +1,67 @@
 import TopBar from "../TopBar/TopBar";
 import styled from "styled-components";
 import Footer from "../Footer/Footer";
-import { CircularProgressbar, CircularProgressbarWithChildren } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useEffect } from "react/cjs/react.development";
 import { getToday } from "../../Service/trackit";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import UserContext from "../../Contexts/UserContext";
 import dayjs from "dayjs";
 import 'dayjs/locale/pt-br';
+import HabitSituation from "./HabitSituation";
+
 export default function Today() {
 
-    const {userInfo, setUserInfo} = useContext(UserContext);
+    const {userInfo} = useContext(UserContext);
+    const {setPercentage} = useContext(UserContext);    
+    const [data, setData] = useState([]);
 
-    useEffect(() => {
+    function renderToday() {
+        getToday(userInfo.token).then((response) => {setData(response.data)}).catch(err => {
+            alert("erro")
+        });
+    }
 
-        console.log(userInfo.token);
-        getToday(userInfo.token).then((response) => console.log(response));
-    }, [])
-    console.log(dayjs().locale('pt-br').format('dddd, DD/MM'));
+    useEffect(renderToday, []);
+
+    const habitsDone = data.filter((e) => e.done);
+
+    habitsDone.length > 0 ? setPercentage((habitsDone.length/data.length*100).toFixed(0)) : setPercentage(0);
 
     return (
         <>
             <TopBar />
-            <SituationHabitsContent>
-                <Date>{dayjs().locale('pt-br').format('dddd, DD/MM')}</Date>
-                <Span>Nenhum hábito concluído ainda</Span>
-                <HabitSituation>
-                    <HabitTitle>Ler 1 capítulo de livro</HabitTitle>
-                    <button></button>
-                    
-                    <Records>Sequência atual: 3 dias</Records>
-                    <Records>Seu recorde: 5 dias</Records>
-                </HabitSituation>
-                <HabitSituation>
-                    <HabitTitle>Ler 1 capítulo de livro</HabitTitle>
-                    <button></button>
-                    <Records>Sequência atual: 3 dias</Records>
-                    <Records>Seu recorde: 5 dias</Records>
-                </HabitSituation>
-            </SituationHabitsContent>
+            <Container>
+                <Date>{`${dayjs().locale('pt-br').format("dddd")}, ${dayjs().format("D")}/${dayjs().format("MM")}`}</Date>
+                <Status color={habitsDone.length > 0 ? "#8FC549" : "#BABABA"}>
+                    <p>{habitsDone.length > 0 ? `${(habitsDone.length/data.length*100).toFixed(0)}% dos hábitos concluídos` : "Nenhum hábito concluído ainda"}</p>
+                </Status>
+                {data.length > 0 ? data.map((d) => <HabitSituation key={d.id} data={d} renderToday={renderToday}/>) : ""}
+            </Container>
             <Footer />
-
         </>
     );
 }
-function Example(props) {
-    return (
-      <div style={{ marginBottom: 80 , display: "fixed", zIndex: 555}}>
-        <hr style={{ border: "2px solid purple" }} />
-        <div style={{ marginTop: 30, display: "flex" }}>
-          <div style={{ width: "30%", paddingRight: 30 }}>{props.children}</div>
-          <div style={{ width: "70%" }}>
-            <h3 className="h5">{props.label}</h3>
-            <p>{props.description}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+
+
+  const Container = styled.div`
+  height: 100vh;
+  margin-top: 80px;
+  padding: 0 18px 0 18px;
+`;
+
+const Date = styled.h2`
+  color: #126BA5;
+  font-size: 23px;
+  padding-top: 20px;
+  margin-bottom: 5px;
+`;
+
+const Status = styled.div`
+  color: ${props => props.color};
+  font-size: 18px;
+  margin-bottom: 28px;
+`;
 
 export const SituationHabitsContent = styled.div`
     background-color: #E5E5E5;
@@ -73,30 +76,6 @@ export const Span = styled.span`
     top: calc(70px + 57px);
     margin-bottom: 28px;
     margin-bottom: 50px;
-`;
-
-export const Date = styled.h2`
-    color: #126BA5;
-    font-size: 22.98px;
-    margin-bottom: 50px;
-`;
-
-export const HabitSituation = styled.div`
-    width: 340px;
-    height: 94px;
-    background-color: #FFFFFF;
-    border-radius: 5px;
-    padding: 13px 11px 0 17px;
-    margin-bottom: 10px;
-    position: relative;
-    button {
-        width: 69px;
-        height: 69px;
-        background-color: #EBEBEB;
-        position: absolute;
-        top: 13px;
-        right: 13px;
-    }
 `;
 
 export const HabitTitle = styled.h3`

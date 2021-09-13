@@ -1,48 +1,50 @@
 
 import styled from "styled-components";
 import "react-circular-progressbar/dist/styles.css";
-import { useState } from "react/cjs/react.development";
-
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { Link } from "react-router-dom";
+import { CircularProgressbar } from 'react-circular-progressbar';
+import { useHistory } from "react-router-dom";
+import { useContext } from "react";
+import UserContext from "../../Contexts/UserContext";
 
 export default function Footer() {
 
-    const [percentage, setPercentage]= useState(40);
+    const {percentage} = useContext(UserContext);    
+    const history = useHistory();
+
     return (
         <FooterComponent>
-            <Link to='/habits'>
-                <p>Hábitos</p>
-            </Link>
-            <CircularProgressbar
-                value={percentage}
-                text={`Hoje`}
-                styles={{
-                    root: {backgroundColor: '#52B6FF', borderRadius: `${50}%`, width: 100, height: 100, marginBottom: 45, strokeWidth: 8},
-                    path: {
-                    stroke: `#FFFFFF`,
-                    strokeLinecap: 'butt',
-                    strokeWidth: `${8}px`,
-                    transformOrigin: 'center center',
-                    backgroundColor: 'black',
-                    margin: 5,
-                    },
-                    trail: {
-                    stroke: '#52B6FF',
-                    strokeLinecap: 'butt',
-                    transform: 'rotate(0.25turn)',
-                    transformOrigin: 'center center',
-                    },
-                    text: {
-                    fill: '#FFFFFF',
-                    fontSize: '16px',
-                    },
-                    background: {
-                    fill: '#3e98c7',
-                    },
-                }}
-                />
-                <p>Histórico</p>
+            <p onClick={() => history.push("/habitos")}>Hábitos</p>
+            <div onClick={() => history.push("/hoje")}>
+                <CircularProgressbar 
+                    value={percentage}
+                    text={`Hoje`}
+                    styles={{
+                        root: {backgroundColor: '#52B6FF', borderRadius: `${50}%`, width: 100, height: 100, marginBottom: 45, strokeWidth: 8},
+                        path: {
+                        stroke: `#FFFFFF`,
+                        strokeLinecap: 'butt',
+                        strokeWidth: `${8}px`,
+                        transformOrigin: 'center center',
+                        backgroundColor: 'black',
+                        margin: 5,
+                        },
+                        trail: {
+                        stroke: '#52B6FF',
+                        strokeLinecap: 'butt',
+                        transform: 'rotate(0.25turn)',
+                        transformOrigin: 'center center',
+                        },
+                        text: {
+                        fill: '#FFFFFF',
+                        fontSize: '16px',
+                        },
+                        background: {
+                        fill: '#3e98c7',
+                        },
+                    }}
+                    />
+            </div>
+            <p>Histórico</p>
         </FooterComponent>
     );
 }
