@@ -16,6 +16,19 @@ function postLogin (body) {
     return promise;
 }
 
+function postHabits (token, body) {    
+
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    }
+
+    const promise = axios.post(`${BASE_URL}/habits`, body, config);
+
+    return promise;
+}
+
 function getHabits (token) {    
 
     const config = {
@@ -24,11 +37,10 @@ function getHabits (token) {
         }
     }
 
-    const promise = axios.post(`${BASE_URL}/habits`, config);
+    const promise = axios.get(`${BASE_URL}/habits`, config);
 
     return promise;
 }
-
 
 function getToday (token) {
     
@@ -42,9 +54,23 @@ function getToday (token) {
     return promise;
 }
 
+function deleteHabit(token, id){
+
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    }
+
+    const promise = axios.delete(`${BASE_URL}/habits/${id}`, config);
+
+    return promise;
+}
 export {
     postRegister,
     postLogin,
+    postHabits,
     getHabits,
     getToday,
+    deleteHabit,
 }

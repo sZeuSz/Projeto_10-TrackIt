@@ -38,7 +38,6 @@ function App() {
             {/* <Today2 /> */}
           </Route>
         </Switch>
-        <button onClick={() => console.log(userInfo)}>click me</button>
         <GlobalStyle />
       </BrowserRouter>
     </UserContext.Provider>

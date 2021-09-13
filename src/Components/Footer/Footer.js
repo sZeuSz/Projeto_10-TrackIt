@@ -4,13 +4,16 @@ import "react-circular-progressbar/dist/styles.css";
 import { useState } from "react/cjs/react.development";
 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { Link } from "react-router-dom";
 
 export default function Footer() {
 
     const [percentage, setPercentage]= useState(40);
     return (
         <FooterComponent>
-            <p>Hábitos</p>
+            <Link to='/habits'>
+                <p>Hábitos</p>
+            </Link>
             <CircularProgressbar
                 value={percentage}
                 text={`Hoje`}
