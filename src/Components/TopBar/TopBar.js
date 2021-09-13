@@ -26,6 +26,7 @@ export const Header = styled.header`
     align-items: center;
     justify-content: space-between;
     padding: 0 18px 0 18px;  
+    box-shadow: 0px 4px 4px 0px #00000026;
     z-index: 2; 
 `;
 
